@@ -1,0 +1,84 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[8]:
+
+
+import pandas as pd
+get_ipython().run_line_magic('matplotlib', 'inline')
+import numpy as np
+
+
+# In[9]:
+
+
+df = pd.read_csv('/Users/JonGall45/Desktop/DIX320.csv', index_col = [0])
+
+
+# In[10]:
+
+
+df['spx50'] = df['price'].rolling(50).mean()
+df['spx200']= df['price'].rolling(200).mean()
+
+
+# In[47]:
+
+
+df[['spx50', 'spx200']].plot()
+
+
+# In[15]:
+
+
+df['-GEX'] = np.where(df['gex'] < 0, 0, 1)
+
+
+# In[28]:
+
+
+df.tail()
+
+
+# In[23]:
+
+
+df['Long'] = df['price'].pct_change(1) * df['-GEX']
+
+
+# In[27]:
+
+
+del df['StrategyPct']
+
+
+# In[52]:
+
+
+df['Long Gamma'] = (df['Long'] + 1).cumprod()
+df['Buy & Hold'] = (df['price'].pct_change(1) +1).cumprod()
+
+
+# In[53]:
+
+
+df[['Long Gamma', 'Buy & Hold']].plot(figsize=(10,10))
+
+
+# In[40]:
+
+
+df
+
+
+# In[55]:
+
+
+print(df)
+
+
+# In[ ]:
+
+
+
+
